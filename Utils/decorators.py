@@ -1,25 +1,9 @@
 # decorators:
-# @require_login - only let logged-in users through
-# @log_action(name) -print who did what and when
-# @handle_errors - catch crashes so the app keeps running
-# @timer - measure how long a function takes
-# @confirm_action - ask yes/no before doing something important
-
 
 import functools    
 import time           
 from datetime import datetime 
-
-# SESSION DICTIONARY
-# remembers who is currently logged in.
-# It starts empty (None). It gets filled in when someone logs in.
-# It goes back to None when they log out.
-
-
-session = {
-    "user": None
-}
-
+from auth.session import session
 
 # DECORATOR 1: @require_login
 # Checks if session["user"] has a value
@@ -88,7 +72,7 @@ def timer(func):
     def wrapper(*args, **kwargs):
         start  = time.perf_counter()      
         result = func(*args, **kwargs)  
-        end    = time.perf_counter()   
+        end  = time.perf_counter()   
 
         # Print elapsed time rounded to 4 decimal places
         print(f"  [TIMER] {func.__name__} -> {end - start:.4f}s")
