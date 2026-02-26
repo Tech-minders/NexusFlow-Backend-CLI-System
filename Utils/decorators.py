@@ -1,4 +1,10 @@
 # decorators:
+# @require_login - only let logged-in users through
+# @log_action(name) -print who did what and when
+# @handle_errors - catch crashes so the app keeps running
+# @timer - measure how long a function takes
+# @confirm_action - ask yes/no before doing something important
+
 
 import functools    
 import time           
