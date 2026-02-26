@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from storage.storage import Storage
 from utils.decorators import require_login
 from utils.logger import Logger
+from subscription.services import SERVICES
 
 #class to manage subscriptions
 class Subscription:
@@ -10,13 +11,6 @@ class Subscription:
     # File to store subscription data
     FILE = "data/subscriptions.json"  
 
-    # Dictionary containing available subscription packages with name, price, and duration in hours
-    PACKAGES = {
-        "1": {"name": "Hourly", "price": 50, "hours": 1},
-        "2": {"name": "Daily", "price": 200, "hours": 24},
-        "3": {"name": "Weekly", "price": 1000, "hours": 168},
-        "4": {"name": "Monthly", "price": 3000, "hours": 720},
-    }
     # Stores logger instance for activity tracking
     def __init__(self, session, logger: Logger):
         self.session = session  
@@ -25,25 +19,36 @@ class Subscription:
     # Prevent access if the user is not logged in
     @require_login(logger=None)  
     def subscribe(self):
-        print("\n------ Available Packages ------")
+        
+        #retrieve service selected by user from the session object
+        service_key = self.session.selected_service_key
+        # validate the selected service
+        if not service_key or service_key not in SERVICES:
+            print("No service selected")
+            return
+        #retrieve service from service dictionary
+        service = SERVICES[service_key]
+        service_name = service["name"]
+        packages = service["packages"]
+        
+        print("\n------ {service_name} Packages ------")
 
         # Loop through all available packages and display them to the user
-        for key in self.PACKAGES:
-            # Get package details using its key
-            package = self.PACKAGES[key]  
+        
+        for key, package in packages.items(): 
             print(f"{key}. {package['name']} - Kshs.{package['price']}")
 
-        choice = input("Select package (1-4): ").strip()
+        choice = input("Select package: ").strip()
 
-        # Check if the selected package exists in the dictionary
-        if choice not in self.PACKAGES:
+        # Check if the selected package exists in the service dictionary
+        if choice not in packages:
             print("Invalid selection. Please choose a valid package.")
             return
         # Retrieve selected package details
-        selected_package = self.PACKAGES[choice] 
-        package_name = selected_package["name"]  
-        package_price = selected_package["price"]  
-        package_hours = selected_package["hours"] 
+        package = packages[choice]
+        package_name = package['name']
+        package_price = package['price']
+        package_hours = package['hours']
 
         print(f"\nYou selected {package_name}")
         print(f"Amount to pay: Kshs.{package_price}")
@@ -76,6 +81,8 @@ class Subscription:
         # Append new subscription details to the subscriptions list
         subscriptions.append({
             "user_id": self.session.current_user["id"], 
+            "service_key": service_key,
+            "service": service_name,
             "package": package_name, 
             "price": package_price, 
             "expiry": expiry.strftime("%Y-%m-%d %H:%M:%S") 
@@ -90,5 +97,5 @@ class Subscription:
         # Log subscription action using the logger class
         self.logger.log(
             self.session.current_user["email"],
-            f"Subscribed to {package_name}"
+            f"Subscribed to {service_name} ({package_name})"
         )
