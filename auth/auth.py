@@ -1,7 +1,7 @@
 import uuid
 import hashlib  # Used for password hashing
 from storage.storage import Storage  # Handles JSON storage
-from utils.logger import Logger  # Logs user actions
+from Utils.logger import Logger  # Logs user actions
 
 
 class Auth:
@@ -9,7 +9,7 @@ class Auth:
 
     FILE = "data/users.json"  # Common storage file
 
-    def _init_(self, session, logger: Logger):
+    def __init__(self, session, logger: Logger):
         self.session = session  # Store session
         self.logger = logger  # Store logger
 

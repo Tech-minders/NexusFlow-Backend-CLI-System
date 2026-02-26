@@ -1,8 +1,8 @@
 import time 
 from datetime import datetime, timedelta
 from storage.storage import Storage
-from utils.decorators import require_login
-from utils.logger import Logger
+from Utils.decorators import require_login
+from Utils.logger import Logger
 from subscription.services import SERVICES
 
 #class to manage subscriptions
@@ -31,7 +31,7 @@ class Subscription:
         service_name = service["name"]
         packages = service["packages"]
         
-        print("\n------ {service_name} Packages ------")
+        print(f"\n------ {service_name} Packages ------")
 
         # Loop through all available packages and display them to the user
         
