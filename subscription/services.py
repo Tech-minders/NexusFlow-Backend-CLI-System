@@ -15,9 +15,32 @@ SERVICES = {
         "name": "Grammarly",
         "url": "https://grammarly.com/",
         "packages": {
-            "1": {"name": "Daily", "price": 30, "hours": 24},
-            "2": {"name": "Weekly", "price": 150, "hours": 168},
-            "3": {"name": "Monthly", "price": 500, "hours": 720},
+            "1": {"name": "Hourly", "price": 10, "hours": 1},
+            "2": {"name": "Daily", "price": 30, "hours": 24},
+            "3": {"name": "Weekly", "price": 150, "hours": 168},
+            "4": {"name": "Monthly", "price": 500, "hours": 720},
+        }
+    },
+
+    "3": {
+        "name": "Ahrefs",
+        "url": "https://ahrefs.com/",
+        "packages": {
+            "1": {"name": "Hourly", "price": 40, "hours": 1},
+            "2": {"name": "Daily", "price": 80, "hours": 24},
+            "3": {"name": "Weekly", "price": 400, "hours": 168},
+            "4": {"name": "Monthly", "price": 1500, "hours": 720},
+        }
+    },
+
+    "4": {
+        "name": "Envato Elements",
+        "url": "https://elements.envato.com/",
+        "packages": {
+            "1": {"name": "Hourly", "price": 20, "hours": 1},
+            "2": {"name": "Daily", "price": 50, "hours": 24},
+            "3": {"name": "Weekly", "price": 250, "hours": 168},
+            "4": {"name": "Monthly", "price": 900, "hours": 720},
         }
     }
 }
