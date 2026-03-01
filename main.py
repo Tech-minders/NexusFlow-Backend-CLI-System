@@ -1,20 +1,22 @@
 #CLI entry point, menu loop and routing
 import os
 import sys
+from auth.session import Session
+from auth.auth  import Signup, Login, Logout
+from subscription.subscribe import Subscription
+from Automation import ServiceAutomation
+from utils.logger  import Logger
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from auth.session import session
-from auth.auth  import Signup, Login, Logout
-from subscription.subscribe import SubscriptionManager
-from utils.logger  import Logger
-
 logger  = Logger()
+session = Session()
 signup  = Signup()
 login   = Login()
 logout  = Logout()
-sub_mgr = SubscriptionManager()
 
+sub_mgr = Subscription(session, logger)
+automation = ServiceAutomation(session, logger)
 
 # Display 
 def clear():
@@ -29,28 +31,33 @@ def banner():
   ║    N E X U S F L O W   C L I    S Y S T E M      ║            
   ╚══════════════════════════════════════════════════╝
           """)
+    
 def status_bar():
    # Shows who is currently logged in (or 'Not logged in').
-    user = session.get("user")
+    user = Session.current_user
     if user:
         print(f" Logged in as: {user['email']}")
     else:
-        print(" Not logged in")   
+        print(" Not logged in") 
+    print()      
 
 
 def pause():
     input("\n  Press Enter to continue...")
 
-
-def logged_out_menu():
+def divider():
     print("  " + "─" * 46)
+
+#logout_menu
+def logged_out_menu():
+    divider()
     print("    [1]  Sign Up")
     print("    [2]  Log In")
     print("    [0]  Exit")
-    print("  " + "─" * 46)
+    divider()
 
 
-def handle_logged_out(choice: str):
+def handle_logged_out(choice):#return True to keep it running
     if choice == "1":
         signup.signup()
         pause()
@@ -58,35 +65,34 @@ def handle_logged_out(choice: str):
         login.login()
         pause()
     elif choice == "0":
-        print("  Goodbye!\n")
-        return False          # signals main loop to exit
+        print("\n  Goodbye!\n")
+        return False          
     else:
-        print("  [!] Invalid option.")
+        print(" \n [!] Invalid option.please choose 1,2 or 0")
         pause()
-    return True               # keep running
+    return True    
 
 
 # Logged-in menu 
 
 def logged_in_menu():
-    print("  " + "─" * 46)
+    divider()
     print("    [1]  Browse Services & Plans")
     print("    [2]  Subscribe to a Plan")
     print("    [3]  My Subscriptions & Access")
     print("    [4]  Cancel a Subscription")
     print("    [0]  Log Out & Exit")
-    print("  " + "─" * 46)
+    divider()
 
 
-def handle_logged_in(choice: str):
+def handle_logged_in(choice):
     if choice == "1":
-        SubscriptionManager.show_catalogue()
+        sub_mgr.show_catalogue()
         pause()
     elif choice == "2":
         sub_mgr.subscribe()
         pause()
     elif choice == "3":
-        # my_subscriptions() shows the table AND handles Access in one flow
         sub_mgr.my_subscriptions()
         pause()
     elif choice == "4":
@@ -96,27 +102,29 @@ def handle_logged_in(choice: str):
         logout.logout()
         pause()
     else:
-        print("  [!] Invalid option.")
+        print("  [!] Invalid option.Please choose 1-4, or 0")
         pause()
-    return True               # always keep running 
+    
 # Main loop 
 # Runs the CLI until the user exits.
 
 def main():
+
     clear()
     
     while True:
         clear()
         banner()
         status_bar()
-        
-        user = session.get("user")
-        if not user:
+       
+        if not session.current_user:
             logged_out_menu()
             print()
-            choice = input("  Your choice: ").strip()
+            choice = input(" Your choice: ").strip()
             print()
-            running = handle_logged_out(choice)
+            keep_running = handle_logged_out(choice)
+            if not keep_running:
+                break
         else:
             logged_in_menu()
             print()
