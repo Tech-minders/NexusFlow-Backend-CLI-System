@@ -9,7 +9,7 @@ A command-line application that allows users to subscribe to and access premium 
 - Session Persistence — Saves browser login state so users only log in manually once per service
 - Activity Logging — All user actions are logged with timestamps to a JSON file
  ---
-## *Project Structure*
+## **Project Structure**
 ```
 nexusflow/
 ├── main.py                      # Entry point and CLI menus

@@ -134,6 +134,7 @@ def handle_logged_in(choice):
 # Runs the CLI until the user exits.
 
 def main():
+
     clear()
     
     while True:
