@@ -4,16 +4,17 @@ import sys
 from auth.session import Session
 from auth.auth  import Signup, Login, Logout
 from subscription.subscribe import Subscription
-from Automation import ServiceAutomation
+from subscription.services import SERVICES
+from Automation.Automation import ServiceAutomation
 from utils.logger  import Logger
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 logger  = Logger()
 session = Session()
-signup  = Signup()
-login   = Login()
-logout  = Logout()
+signup  = Signup(session, logger)
+login   = Login(session, logger)
+logout  = Logout(session, logger)
 
 sub_mgr = Subscription(session, logger)
 automation = ServiceAutomation(session, logger)
@@ -34,7 +35,7 @@ def banner():
     
 def status_bar():
    # Shows who is currently logged in (or 'Not logged in').
-    user = Session.current_user
+    user = session.current_user
     if user:
         print(f" Logged in as: {user['email']}")
     else:
@@ -79,30 +80,54 @@ def logged_in_menu():
     divider()
     print("    [1]  Browse Services & Plans")
     print("    [2]  Subscribe to a Plan")
-    print("    [3]  My Subscriptions & Access")
-    print("    [4]  Cancel a Subscription")
+    print("    [3]  My Subscriptions")
+    print("    [4]  Access a Service")
+    print("    [5]  Cancel a Subscription")
     print("    [0]  Log Out & Exit")
     divider()
 
+def show_catalogue():
+    print("\n  === Available Services ===")
+    for key, service in SERVICES.items():
+        print(f"\n  [{key}] {service['name']}")
+        for pkg_key, pkg in service["packages"].items():
+            print(f"  {pkg_key}. {pkg['name']:10s}  Kshs.{pkg['price']}")
 
 def handle_logged_in(choice):
     if choice == "1":
-        sub_mgr.show_catalogue()
+        show_catalogue()
         pause()
     elif choice == "2":
+        show_catalogue()
+        service_key = input("\n  Enter service number to subscribe to: ").strip()
+        if service_key not in SERVICES:
+            print("  [!] Invalid service number.")
+            pause()
+            return
+        session.selected_service_key = service_key
         sub_mgr.subscribe()
         pause()
     elif choice == "3":
-        sub_mgr.my_subscriptions()
+        sub_mgr.list_active()
         pause()
     elif choice == "4":
-        sub_mgr.cancel()
+        sub_mgr.list_active()
+        service_key = input("\n  Enter service number to access: ").strip()
+        if service_key not in SERVICES:
+            print("  [!] Invalid service number.")
+            pause()
+            return
+        automation.access_service(service_key)
         pause()
+    elif choice == "5":
+         sub_mgr.list_active()
+         sub_mgr.cancel()
+         pause()   
     elif choice == "0":
         logout.logout()
         pause()
     else:
-        print("  [!] Invalid option.Please choose 1-4, or 0")
+        print("  [!] Invalid option.Please choose 1-5, or 0")
         pause()
     
 # Main loop 
@@ -114,9 +139,15 @@ def main():
     
     while True:
         clear()
+
+        # Check session timeout before anything else
+        if session.is_expired():
+            print("\n  [!] Session expired due to inactivity. Please log in again.")
+            session.expire()
+
         banner()
         status_bar()
-       
+
         if not session.current_user:
             logged_out_menu()
             print()
