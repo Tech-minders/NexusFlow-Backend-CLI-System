@@ -9,7 +9,7 @@
 import functools    
 import time           
 from datetime import datetime 
-from auth.session import session
+from auth.session import Session
 
 # DECORATOR 1: @require_login
 # Checks if session["user"] has a value
@@ -20,7 +20,7 @@ def require_login(func):
     
     @functools.wraps(func) # makes sure the wrapped function keeps its original name.
     def wrapper(*args, **kwargs):
-        if session["user"] is None:
+        if Session["user"] is None:
             print(" ACCESS DENIED! Please log in first.")
             return None
         return func(*args, **kwargs)
@@ -37,7 +37,7 @@ def log_action(action_name):
         # runs every time the decorated function is called
         def wrapper(*args, **kwargs):
             # check who is logged in 
-            user      = session.get("user")
+            user      = Session.get("user")
             email     = user["email"] if user else "anonymous"
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
