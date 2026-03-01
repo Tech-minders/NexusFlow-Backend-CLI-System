@@ -1,15 +1,9 @@
-# NexusFlow Backend CLI System — Dependencies
-#bash
-#sudo apt update
-#sudo apt install python3.12-venv
-#python3 -m venv .venv
-#source .venv/bin/activate
-#pip install playwright
-#playwright install chromium
+# NexusFlow backend CLI — Python dependencies
+# Install with: pip install -r requirements.txt
+# After installing, also run: playwright install chromium
 
+# Browser automation 
+playwright>=1.40.0
 
-#  External dependencies 
-playwright>=1.40.0 
-        
-# Standard library 
-# os, sys, json, uuid, hashlib, functools, time, datetime
+# Standard library modules used (no install needed) 
+# os, sys, json, hashlib, uuid, datetime, functools
