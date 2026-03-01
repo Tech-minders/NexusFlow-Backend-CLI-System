@@ -2,8 +2,8 @@ import time
 import uuid
 from datetime import datetime, timedelta
 from storage.storage import Storage
-from Utils.decorators import require_login
-from Utils.logger import Logger
+from utils.decorators import require_login
+from utils.logger import Logger
 from subscription.services import SERVICES
 
 #class to manage subscriptions
