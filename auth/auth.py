@@ -1,3 +1,4 @@
+import re
 import uuid
 import hashlib  
 from storage.storage import Storage 
@@ -17,7 +18,8 @@ class Auth:
         
         return hashlib.sha256(password.encode()).hexdigest()  
     def valid_email(self, email):
-        return "@" in email and "." in email
+        pattern = r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\add-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(pattern, email))
 
 
         
@@ -80,6 +82,7 @@ class Login(Auth):
         user_found = next((u for u in users if u["email"] == email and u["password"] == hashed_password), None)
         if user_found:
             self.session.current_user = user_found
+            self.session.update_activity()
             print(f"Welcome {email}!")
             self.logger.log(email, "Logged in")
         else:

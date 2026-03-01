@@ -13,7 +13,7 @@ SERVICES = {
 
     "2": {
         "name": "Grammarly",
-        "url": "https://grammarly.com/",
+        "url": "https://www.grammarly.com/signin",
         "packages": {
             "1": {"name": "Hourly", "price": 10, "hours": 1},
             "2": {"name": "Daily", "price": 30, "hours": 24},
@@ -24,7 +24,7 @@ SERVICES = {
 
     "3": {
         "name": "Ahrefs",
-        "url": "https://ahrefs.com/",
+        "url": "https://app.ahrefs.com/user/login",
         "packages": {
             "1": {"name": "Hourly", "price": 40, "hours": 1},
             "2": {"name": "Daily", "price": 80, "hours": 24},
@@ -35,7 +35,7 @@ SERVICES = {
 
     "4": {
         "name": "Envato Elements",
-        "url": "https://elements.envato.com/",
+        "url": "https://elements.envato.com/sign-in",
         "packages": {
             "1": {"name": "Hourly", "price": 20, "hours": 1},
             "2": {"name": "Daily", "price": 50, "hours": 24},
