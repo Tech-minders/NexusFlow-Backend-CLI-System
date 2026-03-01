@@ -97,7 +97,11 @@ class Subscription:
 
         print(f"\nYou selected {package_name} package")
         print(f"Amount to pay: Kshs.{package_price}")
-
+        
+        #Check and disallow if user has already subscribed.
+        if self.has_active_subscription(service_name):
+            print(f"You already have an active subscription for {service_name}.")
+            return
         # Ask user to confirm payment
         confirm = input("Proceed with payment? (y/n): ").lower()
 
@@ -150,10 +154,13 @@ class Subscription:
         subscriptions = self._load_subscriptions()
 
         # Filter active subscriptions for current user
+        now = datetime.now()
         active = [
             sub for sub in subscriptions
             if sub["email"] == self.user_email
-            and sub["status"] == "active"
+            and sub["status"] == "active" and 
+            datetime.strptime(sub["expiry"], 
+            "%Y-%m-%d %H:%M:%S") > now
         ]
 
         if not active:
@@ -164,7 +171,11 @@ class Subscription:
 
         # Display active subscriptions
         for sub in active:
+            service_number = next(
+            (key for key, val in SERVICES.items() if val["name"] == sub["service"]),
+            "N/A")
             print("--------------------------")
+            print(f"Service No: {service_number}")
             print(f"ID: {sub['id']}")
             print(f"Service: {sub['service']}")
             print(f"Package: {sub['package']}")
