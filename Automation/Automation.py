@@ -5,13 +5,13 @@ from utils.decorators import require_login
 from subscription.services import SERVICES
 from subscription.subscribe import Subscription
 
-# Test credentials
-TEST_EMAIL = "sylvesterkonana@gmail.com"
-TEST_PASSWORD = "Konana@123"
+# Test credentials 
+TEST_EMAIL = "lucynjoka2025@gmail.com"
+TEST_PASSWORD = "Lucy@7890q" 
 
 class ServiceAutomation:
 
-    def _init_(self, session, logger):
+    def __init__(self, session, logger):
         self.session = session
         self.logger = logger
         self.subscription = Subscription(session, logger)
