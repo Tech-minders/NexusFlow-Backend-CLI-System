@@ -3,11 +3,13 @@ A command-line application that allows users to subscribe to and access premium 
 
 ## **Features**
 
-- User Authentication — Signup, login, and logout with SHA-256 password hashing
-- Subscription Management — Subscribe to services with Hourly, Daily, Weekly, and Monthly packages
-- Automated Browser Access — Launch and manage authenticated browser sessions via Playwright
-- Session Persistence — Saves browser login state so users only log in manually once per service
-- Activity Logging — All user actions are logged with timestamps to a JSON file
+- **Account management** — sign up, log in, and log out with email/password authentication
+- **Flexible packages** — subscribe by the hour, day, week, or month
+- **Browser automation** — Playwright opens the chosen service and logs in automatically using a saved session
+- **Session persistence** — browser state is saved after the first login; subsequent visits are instant
+- **Subscription management** — view active subscriptions and cancel by ID
+- **Activity logging** — every action (signup, login, subscribe, access, cancel) is timestamped and saved
+- **Session timeout** — CLI sessions expire after 5 minutes of inactivity
  ---
 ## **Project Structure**
 ```
@@ -71,25 +73,35 @@ python main.py
 
 ## Usage
 
-### Main Menu (Logged Out)
+When you run `main.py`, you'll see the NexusFlow banner and a menu based on your login state.
+
+**Before logging in:**
+
 ```
-=== NexusFlow CLI ===
-1. Signup
-2. Login
-0. Exit
+[1]  Sign Up
+[2]  Log In
+[0]  Exit
 ```
 
-### Main Menu (Logged In)
+**After logging in:**
+
 ```
-=== NexusFlow CLI ===
-Logged in as: user@example.com
-1. Select Service
-2. Logout
-0. Exit
+[1]  Browse Services & Plans
+[2]  Subscribe to a Plan
+[3]  My Subscriptions
+[4]  Access a Service
+[5]  Cancel a Subscription
+[0]  Log Out & Exit
 ```
 
-**Subscribing** walks you through package selection and payment confirmation.
+### Typical flow
 
+1. **Sign Up** — enter an email and password (confirmed). Passwords are SHA-256 hashed before storage.
+2. **Log In** — authenticate with your credentials.
+3. **Browse Services** — view all available services and their packages.
+4. **Subscribe** — select a service and a package, confirm payment to activate.
+5. **Access a Service** — select a service you're subscribed to. Playwright opens a Chromium browser. The first time, it logs in automatically (or prompts you to complete login manually if automation fails) and saves the session. Every visit after that is instant.
+6. **Cancel** — list your active subscriptions and cancel one by its ID.
 ---
 
 ## Data Storage
@@ -105,11 +117,11 @@ The `data/` directory is created automatically on first run.
 
 ---
 
-## Security Notes
+## Notes
 
-- Passwords are hashed using SHA-256 before storage — plain-text passwords are never saved.
-- Browser session files are stored locally and tied to a specific user ID and service.
-- No payment processing is integrated; the payment step is simulated via CLI confirmation.
+- Only one active subscription per service is allowed per user at a time.
+- The automation module includes login flows for all four supported services. If auto-login fails (e.g. due to a UI change), the user is prompted to complete login manually, after which the session is saved as normal.
+- The `data/` directory and all JSON files are created automatically
 
 ---
 
